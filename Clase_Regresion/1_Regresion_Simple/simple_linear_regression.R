@@ -1,5 +1,5 @@
 # Simple Linear Regression
-setwd("C:/Users/BIO/Desktop/LeoWork/Curso_Esp_Calidad_ICESI/Clase_Regresion/1_Regresion_Simple")
+setwd("C:/Users/BIO/Desktop/Data_Analysis_Comparation/Clase_Regresion/1_Regresion_Simple")
 
 
 
@@ -19,8 +19,11 @@ test_set = subset(dataset, split == FALSE)
 # test_set = scale(test_set)
 
 # Fitting Simple Linear Regression to the Training set
-regressor = lm(formula = Salary ~ YearsExperience,
+R_lineal = lm(formula = Salary ~ YearsExperience,
                data = training_set)
+R_lineal
+#Info
+summary(R_lineal)
 
 # Predicting the Test set results
 y_pred = predict(regressor, newdata = test_set)
@@ -30,7 +33,7 @@ library(ggplot2)
 ggplot() +
   geom_point(aes(x = training_set$YearsExperience, y = training_set$Salary),
              colour = 'red') +
-  geom_line(aes(x = training_set$YearsExperience, y = predict(regressor, newdata = training_set)),
+  geom_line(aes(x = training_set$YearsExperience, y = predict(R_lineal, newdata = training_set)),
             colour = 'blue') +
   ggtitle('Salary vs Experience (Training set)') +
   xlab('Years of experience') +
@@ -41,8 +44,27 @@ library(ggplot2)
 ggplot() +
   geom_point(aes(x = test_set$YearsExperience, y = test_set$Salary),
              colour = 'red') +
-  geom_line(aes(x = training_set$YearsExperience, y = predict(regressor, newdata = training_set)),
+  geom_line(aes(x = training_set$YearsExperience, y = predict(R_lineal, newdata = training_set)),
             colour = 'blue') +
   ggtitle('Salary vs Experience (Test set)') +
   xlab('Years of experience') +
   ylab('Salary')
+
+#Residuals
+par(mfrow = c(1,1))
+residuals_rlin <- rstandard(R_lineal)
+adjusted_values_rlin <- fitted(R_lineal)
+plot(adjusted_values_rlin, residuals_rlin)
+
+#Revisar normalidad de los errores
+qqnorm(residuals_rlin)
+qqline(residuals_rlin)
+
+#Normality test Kolmogorov-Smirnov
+ks.test(x = residuals_rlin,"pnorm", mean(residuals_rlin), sd(residuals_rlin))
+#Normality test Kolmogorov-Smirnov modification test Lilliefors
+library("nortest")
+lillie.test(x = residuals_rlin)
+#Jarque Bera Test
+library("tseries")
+jarque.bera.test(x = residuals_rlin)

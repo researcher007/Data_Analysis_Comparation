@@ -1,12 +1,10 @@
-# Multiple Linear Regression
-
-setwd("C:/Users/BIO/Desktop/LeoWork/Curso_Esp_Calidad_ICESI/Clase_Datos")
+#Set wd
+setwd("C:/Users/BIO/Desktop/Data_Analysis_Comparation/Clase_Datos")
 
 # Importing the dataset
+dataset = read.csv('Data_des_sta.csv')
 
-dataset = read.csv('50_Startups_c5.csv')
-
-#Eliminar una columna
+#Drop variable
 library(dplyr)
 dataset <- select(dataset, -X)
 
